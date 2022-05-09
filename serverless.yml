@@ -1,0 +1,43 @@
+# serverless.yml
+
+service: t1e
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  stage: dev
+  region: us-east-1
+
+functions:
+  app:
+    handler: index.handler
+    events:
+      - http: ANY /
+  login:
+    handler: index.handler
+    events:
+      - http:
+          path: login
+          method: post
+          cors: true
+  check:
+    handler: index.handler
+    events:
+      - http:
+          path: check
+          method: post
+          cors: true
+  getOne:
+    handler: index.handler
+    events:
+      - http:
+          path: /{id}
+          method: get
+          cors: true
+  hello:
+    handler: index.handler
+    events:
+      - http:
+          path: hello
+          method: get
+          cors: true
