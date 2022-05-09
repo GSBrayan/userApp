@@ -1,14 +1,13 @@
 const mongoose = require("mongoose");
 
-require("dotenv").config();
+const dotenv = require("dotenv").config();
 
 const connectionParams = {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 };
 
-const uri =
-  "mongodb+srv://bGonzalez:Welcome2022@cluster0.ta7al.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
+const uri = `${process.env.DB}`;
 
 const connection = mongoose
   .connect(uri, connectionParams)
