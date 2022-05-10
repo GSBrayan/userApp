@@ -1,27 +1,10 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
 const User = require("./models/user");
-const bodyparser = require("body-parser");
 const serverless = require("serverless-http");
 const auth = require("./middleware/authentication");
 
 const app = express();
-
-app.use(bodyparser.json());
-app.use(bodyparser.urlencoded({ extended: true }));
-
-/**
- * Utilities Functions
- */
-// const validateRequiredValues = (data) => {
-//     let {name, lastName, lastName2, phone, email, username, password} = data;
-
-//     if(name && lastName && phone && email && username && password) {
-//         return true;
-//     } else {
-//         return false;
-//     }
-// }
 
 app.post("/", async (req, res) => {
   const { name, lastName, lastName2, phone, email, username, password } =

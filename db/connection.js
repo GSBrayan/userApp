@@ -1,7 +1,5 @@
 const mongoose = require("mongoose");
 
-const dotenv = require("dotenv").config();
-
 const connectionParams = {
   useNewUrlParser: true,
   useUnifiedTopology: true,
