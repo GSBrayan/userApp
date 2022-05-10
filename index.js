@@ -3,18 +3,28 @@ const jwt = require("jsonwebtoken");
 const User = require("./models/user");
 const bodyparser = require("body-parser");
 const serverless = require("serverless-http");
-const connection = require("./db/connection");
 const auth = require("./middleware/authentication");
-const awsServerlessExpress = require("aws-serverless-express");
 
 const app = express();
-let conn = null;
 
 app.use(bodyparser.json());
 app.use(bodyparser.urlencoded({ extended: true }));
 
+/**
+ * Utilities Functions
+ */
+// const validateRequiredValues = (data) => {
+//     let {name, lastName, lastName2, phone, email, username, password} = data;
+
+//     if(name && lastName && phone && email && username && password) {
+//         return true;
+//     } else {
+//         return false;
+//     }
+// }
+
 app.post("/", async (req, res) => {
-  const { name, lastName, lastName2, phone, email, username, secret } =
+  const { name, lastName, lastName2, phone, email, username, password } =
     req.body;
   try {
     const newUser = await User.create({
@@ -24,7 +34,7 @@ app.post("/", async (req, res) => {
       phone,
       email,
       username,
-      secret,
+      password,
     });
     res.json(newUser);
   } catch (e) {
@@ -57,15 +67,15 @@ app.get("/hello", function (req, res) {
 
 app.post("/login", async (req, res) => {
   try {
-    const { email, secret } = req.body;
+    const { email, password } = req.body;
 
-    if (!(email && secret)) {
-      res.status(400).send("Ingresa email y/o secret");
+    if (!(email && password)) {
+      res.status(400).send("Ingresa su email y/o contraseña");
     }
 
     const user = await User.findOne({ email }).lean();
 
-    if (user && secret === user.secret) {
+    if (user && password === user.password) {
       const token = jwt.sign(
         { user_id: user._id, email },
         process.env.TOKEN_KEY,
