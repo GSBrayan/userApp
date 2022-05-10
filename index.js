@@ -1,25 +1,62 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
 const User = require("./models/user");
+const bodyparser = require("body-parser");
 const serverless = require("serverless-http");
 const auth = require("./middleware/authentication");
 
 const app = express();
 
+app.use(bodyparser.json());
+app.use(bodyparser.urlencoded({ extended: true }));
+
+const validateLength = (data) => {
+  const { name, lastName, lastName2, phone, email, username, password } = data;
+
+  let validExpression =
+    name.length <= 40 &&
+    lastName.length <= 40 &&
+    lastName2.length <= 40 &&
+    phone.length <= 10 &&
+    email.length <= 40 &&
+    username.length <= 30 &&
+    password.length <= 20
+      ? true
+      : false;
+
+  return validExpression;
+};
+
 app.post("/", async (req, res) => {
   const { name, lastName, lastName2, phone, email, username, password } =
     req.body;
+
   try {
-    const newUser = await User.create({
-      name,
-      lastName,
-      lastName2,
-      phone,
-      email,
-      username,
-      password,
-    });
-    res.json(newUser);
+    let newUser = new User();
+    newUser.name = name;
+    newUser.lastName = lastName;
+    newUser.lastName2 = lastName2;
+    newUser.password = password;
+    newUser.email = email;
+    newUser.username = username;
+    newUser.phone = phone;
+
+    if (
+      name &&
+      lastName &&
+      phone &&
+      password &&
+      username &&
+      validateLength(req.body)
+    ) {
+      newUser.save(function (err, user) {
+        if (err) res.status(500).send("Save Failed");
+
+        res.json(user);
+      });
+    } else {
+      res.status(500).send("Please fill in all fields");
+    }
   } catch (e) {
     res.status(500).send(e);
   }
@@ -30,7 +67,7 @@ app.get("/", async (req, res) => {
     const users = await User.find();
     res.json(users);
   } catch (e) {
-    console.log(e);
+    res.status(500).send(e);
   }
 });
 
@@ -44,19 +81,18 @@ app.get("/:id", async (req, res) => {
   }
 });
 
-app.get("/hello", function (req, res) {
-  res.send("Hello World!");
-});
-
 app.post("/login", async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { userVerify, password } = req.body;
 
     if (!(email && password)) {
       res.status(400).send("Ingresa su email y/o contraseña");
     }
 
-    const user = await User.findOne({ email }).lean();
+    const phoneUser = await User.findOne({ email }).lean();
+    const emailUser = await User.findOne({ phone }).lean();
+
+    const user = phoneUser ? phoneUser : emailUser;
 
     if (user && password === user.password) {
       const token = jwt.sign(
