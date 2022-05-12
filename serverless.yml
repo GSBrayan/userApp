@@ -1,6 +1,6 @@
 # serverless.yml
 
-service: t1e
+service: userApp
 
 provider:
   name: aws
@@ -20,24 +20,17 @@ functions:
           path: login
           method: post
           cors: true
-  check:
+  create:
     handler: index.handler
     events:
       - http:
-          path: check
+          path: create
           method: post
           cors: true
-  getOne:
+  searchAll:
     handler: index.handler
     events:
       - http:
-          path: /{id}
-          method: get
-          cors: true
-  hello:
-    handler: index.handler
-    events:
-      - http:
-          path: hello
+          path: searchAll
           method: get
           cors: true

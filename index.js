@@ -1,6 +1,7 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
 const User = require("./models/user");
+const conn = require("./db/connection");
 const bodyparser = require("body-parser");
 const serverless = require("serverless-http");
 const auth = require("./middleware/authentication");
@@ -10,6 +11,9 @@ const app = express();
 app.use(bodyparser.json());
 app.use(bodyparser.urlencoded({ extended: true }));
 
+/**
+ * this function validate all values
+ */
 const validateLength = (data) => {
   const { name, lastName, lastName2, phone, email, username, password } = data;
 
@@ -27,7 +31,7 @@ const validateLength = (data) => {
   return validExpression;
 };
 
-app.post("/", async (req, res) => {
+app.post("/create", async (req, res) => {
   const { name, lastName, lastName2, phone, email, username, password } =
     req.body;
 
@@ -62,7 +66,7 @@ app.post("/", async (req, res) => {
   }
 });
 
-app.get("/", async (req, res) => {
+app.get("/searchAll", async (req, res) => {
   try {
     const users = await User.find();
     res.json(users);
@@ -85,23 +89,16 @@ app.post("/login", async (req, res) => {
   try {
     const { userVerify, password } = req.body;
 
-    if (!(email && password)) {
+    if (!(userVerify && password)) {
       res.status(400).send("Ingresa su email y/o contraseña");
     }
 
-    const phoneUser = await User.findOne({ email }).lean();
-    const emailUser = await User.findOne({ phone }).lean();
-
-    const user = phoneUser ? phoneUser : emailUser;
+    const user = await User.findOne({ userVerify }).lean();
 
     if (user && password === user.password) {
-      const token = jwt.sign(
-        { user_id: user._id, email },
-        process.env.TOKEN_KEY,
-        {
-          expiresIn: "2h",
-        }
-      );
+      const token = jwt.sign({ user_id: user._id, userVerify }, "GLOBANT2022", {
+        expiresIn: "2h",
+      });
 
       user.token = token;
 
@@ -119,6 +116,7 @@ app.post("/check", auth, (req, res) => {
 });
 
 app.listen(3000, () => {
+  conn.connection;
   console.log("Listening at port 3000");
 });
 

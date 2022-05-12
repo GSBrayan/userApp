@@ -5,11 +5,11 @@ const connectionParams = {
   useUnifiedTopology: true,
 };
 
-const uri = `${process.env.DB}`;
+const uri = `mongodb+srv://bGonzalez:Welcome2022@cluster0.ta7al.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
 
 const connection = mongoose
   .connect(uri, connectionParams)
-  .then(() => {
+  .then((data) => {
     console.log("Connected to database");
   })
   .catch((err) => {

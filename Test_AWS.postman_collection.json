@@ -1,0 +1,94 @@
+{
+	"info": {
+		"_postman_id": "d70c6156-0fc2-4350-aea8-84bcd25b5daa",
+		"name": "Test AWS",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "create user",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"Brayan\",\n  \"lastName\": \"Gonzalez\",\n  \"lastName2\": \"Sanchez\",\n  \"phone\": \"83280522\",\n  \"email\": \"brayan.gonzalez@globant.com\",\n  \"username\": \"GSBrayan\",\n  \"password\": \"1234567\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://g0ufiueh62.execute-api.us-east-1.amazonaws.com/Test",
+					"protocol": "https",
+					"host": [
+						"g0ufiueh62",
+						"execute-api",
+						"us-east-1",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"Test"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "search user",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://g0ufiueh62.execute-api.us-east-1.amazonaws.com/Test",
+					"protocol": "https",
+					"host": [
+						"g0ufiueh62",
+						"execute-api",
+						"us-east-1",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"Test"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"userVerify\": \"83280522\",\n    \"password\": \"1234567\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://g0ufiueh62.execute-api.us-east-1.amazonaws.com/Test/login",
+					"protocol": "https",
+					"host": [
+						"g0ufiueh62",
+						"execute-api",
+						"us-east-1",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"Test",
+						"login"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
